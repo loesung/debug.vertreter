@@ -2,8 +2,9 @@ var http = require('http');
 var buffer = require('buffer');
 var url = require('url');
 
-var socketPath = process.argv[2];
-console.log(socketPath);
+var listenPort = process.argv[2];
+var socketPath = process.argv[3];
+console.log('Proxy port ' + listenPort + ' to ' + socketPath);
 
 http.createServer(function(request, response){
     console.log('Request: ', request.url);
@@ -38,9 +39,9 @@ http.createServer(function(request, response){
             response.end(chunk);
         });
     });
-    proxyRequest.on('error', function(){
+    proxyRequest.on('error', function(e){
         response.writeHead(503);
-        response.end('ERROR FROM PROXY: DESTINATION NOT IN REACH.');
+        response.end('ERROR FROM PROXY: DESTINATION NOT IN REACH.' + e);
     });
 
-}).listen(2333);
+}).listen(listenPort);
